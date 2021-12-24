@@ -68,5 +68,45 @@ namespace MarkovAlgorithmInterpreterTest
 
             Assert.AreEqual(expectedOutput, run.Output);
         }
+
+        [TestCase(10)]
+        [TestCase(100)]
+        [TestCase(500)]
+        [TestCase(1000)]
+        [TestCase(1500)]
+        [TestCase(2000)]
+        [TestCase(2500)]
+        public void SortABCStressTest(int length)
+        {
+            var shuffled = new StringBuilder();
+
+            int aCount = 0;
+            int bCount = 0;
+            int cCount = 0;
+
+            var random = new System.Random(12345);
+
+            for (int i = 0; i < length; ++i)
+            {
+                var nextChar = (char)(random.Next(3) + 'a');
+                if (nextChar == 'a') ++aCount;
+                if (nextChar == 'b') ++bCount;
+                if (nextChar == 'c') ++cCount;
+                shuffled.Append(nextChar);
+            }
+
+            var expectedOutput = new String('a', aCount) + new String('b', bCount) + new string('c', cCount);
+
+            var rules = new List<Rule>();
+            rules.Add(new Rule("ba", "ab"));
+            rules.Add(new Rule("ca", "ac"));
+            rules.Add(new Rule("cb", "bc"));
+
+            var program = new MarkovProgram(rules);
+
+            var run = program.Run(shuffled.ToString());
+
+            Assert.AreEqual(expectedOutput, run.Output);
+        }
     }
 }
