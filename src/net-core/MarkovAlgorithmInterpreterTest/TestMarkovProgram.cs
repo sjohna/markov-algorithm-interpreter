@@ -19,7 +19,7 @@ namespace MarkovAlgorithmInterpreterTest
         [TestCase("Hello World!", "Hello World!")]
         public void ReplaceAWithB(string input, string expectedOutput)
         {
-            var rule = new FindReplaceRule("a", "b");
+            var rule = FindReplaceRule.Create("a", "b");
             var program = new MarkovProgram(new List<FindReplaceRule>() { rule });
 
             var run = program.Run(input);
@@ -35,7 +35,7 @@ namespace MarkovAlgorithmInterpreterTest
         [TestCase("bbbbbbbbbbaaaaaaaaaa", "aaaaaaaaaabbbbbbbbbb")]
         public void SortAAndB(string input, string expectedOutput)
         {
-            var rule = new FindReplaceRule("ba", "ab");
+            var rule = FindReplaceRule.Create("ba", "ab");
             var program = new MarkovProgram(new List<FindReplaceRule>() { rule });
 
             var run = program.Run(input);
@@ -58,9 +58,9 @@ namespace MarkovAlgorithmInterpreterTest
         public void SortABC(string input, string expectedOutput)
         {
             var rules = new List<FindReplaceRule>();
-            rules.Add(new FindReplaceRule("ba", "ab"));
-            rules.Add(new FindReplaceRule("ca", "ac"));
-            rules.Add(new FindReplaceRule("cb", "bc"));
+            rules.Add(FindReplaceRule.Create("ba", "ab"));
+            rules.Add(FindReplaceRule.Create("ca", "ac"));
+            rules.Add(FindReplaceRule.Create("cb", "bc"));
 
             var program = new MarkovProgram(rules);
 
@@ -98,9 +98,9 @@ namespace MarkovAlgorithmInterpreterTest
             var expectedOutput = new String('a', aCount) + new String('b', bCount) + new string('c', cCount);
 
             var rules = new List<FindReplaceRule>();
-            rules.Add(new FindReplaceRule("ba", "ab"));
-            rules.Add(new FindReplaceRule("ca", "ac"));
-            rules.Add(new FindReplaceRule("cb", "bc"));
+            rules.Add(FindReplaceRule.Create("ba", "ab"));
+            rules.Add(FindReplaceRule.Create("ca", "ac"));
+            rules.Add(FindReplaceRule.Create("cb", "bc"));
 
             var program = new MarkovProgram(rules);
 
@@ -123,10 +123,10 @@ namespace MarkovAlgorithmInterpreterTest
         public void MostCommonAAndB(string input, string expectedOutput)
         {
             var rules = new List<FindReplaceRule>();
-            rules.Add(new FindReplaceRule("ba", ""));
-            rules.Add(new FindReplaceRule("ab", ""));
-            rules.Add(new FindReplaceRule("aa", "a"));
-            rules.Add(new FindReplaceRule("bb", "b"));
+            rules.Add(FindReplaceRule.Create("ba", ""));
+            rules.Add(FindReplaceRule.Create("ab", ""));
+            rules.Add(FindReplaceRule.Create("aa", "a"));
+            rules.Add(FindReplaceRule.Create("bb", "b"));
 
             var program = new MarkovProgram(rules);
 
@@ -160,10 +160,10 @@ namespace MarkovAlgorithmInterpreterTest
             var expectedOutput = (aCount > bCount) ? "a" : (aCount == bCount) ? "" : "b";
 
             var rules = new List<FindReplaceRule>();
-            rules.Add(new FindReplaceRule("ba", ""));
-            rules.Add(new FindReplaceRule("ab", ""));
-            rules.Add(new FindReplaceRule("aa", "a"));
-            rules.Add(new FindReplaceRule("bb", "b"));
+            rules.Add(FindReplaceRule.Create("ba", ""));
+            rules.Add(FindReplaceRule.Create("ab", ""));
+            rules.Add(FindReplaceRule.Create("aa", "a"));
+            rules.Add(FindReplaceRule.Create("bb", "b"));
 
             var program = new MarkovProgram(rules);
 
@@ -182,9 +182,9 @@ namespace MarkovAlgorithmInterpreterTest
         public void BinaryToUnary(string input, string expectedOutput)
         {
             var rules = new List<FindReplaceRule>();
-            rules.Add(new FindReplaceRule("|0", "0||"));
-            rules.Add(new FindReplaceRule("1", "0|"));
-            rules.Add(new FindReplaceRule("0", ""));
+            rules.Add(FindReplaceRule.Create("|0", "0||"));
+            rules.Add(FindReplaceRule.Create("1", "0|"));
+            rules.Add(FindReplaceRule.Create("0", ""));
 
             var program = new MarkovProgram(rules);
 

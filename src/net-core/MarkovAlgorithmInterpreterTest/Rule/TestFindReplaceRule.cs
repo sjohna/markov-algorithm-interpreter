@@ -14,7 +14,7 @@ namespace MarkovAlgorithmInterpreterTest
         [Test]
         public void ReplaceOneLetter()
         {
-            var rule = new FindReplaceRule("a", "b");
+            var rule = FindReplaceRule.Create("a", "b");
 
             var application = rule.Apply("a");
 
@@ -25,7 +25,7 @@ namespace MarkovAlgorithmInterpreterTest
         [Test]
         public void ReplaceFirstLetter()
         {
-            var rule = new FindReplaceRule("a", "b");
+            var rule = FindReplaceRule.Create("a", "b");
 
             var application = rule.Apply("aaaaa");
 
@@ -36,7 +36,7 @@ namespace MarkovAlgorithmInterpreterTest
         [Test]
         public void ReplaceLetterInMiddle()
         {
-            var rule = new FindReplaceRule("a", "b");
+            var rule = FindReplaceRule.Create("a", "b");
 
             var application = rule.Apply("cccaccc");
 
@@ -47,7 +47,7 @@ namespace MarkovAlgorithmInterpreterTest
         [Test]
         public void ReplaceLastLetter()
         {
-            var rule = new FindReplaceRule("a", "b");
+            var rule = FindReplaceRule.Create("a", "b");
 
             var application = rule.Apply("cccca");
 
@@ -58,7 +58,7 @@ namespace MarkovAlgorithmInterpreterTest
         [Test]
         public void FindNotFound()
         {
-            var rule = new FindReplaceRule("a", "b");
+            var rule = FindReplaceRule.Create("a", "b");
 
             var application = rule.Apply("cbcbcb");
 
@@ -68,7 +68,7 @@ namespace MarkovAlgorithmInterpreterTest
         [Test]
         public void ReplaceMultipleCharacters()
         {
-            var rule = new FindReplaceRule("abc", "bca");
+            var rule = FindReplaceRule.Create("abc", "bca");
 
             var application = rule.Apply("AabcB");
 
@@ -79,7 +79,7 @@ namespace MarkovAlgorithmInterpreterTest
         [Test]
         public void ReplaceWholeMultiCharacterString()
         {
-            var rule = new FindReplaceRule("hello", "world");
+            var rule = FindReplaceRule.Create("hello", "world");
 
             var application = rule.Apply("hello");
 
@@ -90,7 +90,7 @@ namespace MarkovAlgorithmInterpreterTest
         [Test]
         public void ReplaceWithEmptyStringInMiddle()
         {
-            var rule = new FindReplaceRule("abc", "");
+            var rule = FindReplaceRule.Create("abc", "");
 
             var application = rule.Apply("AabcB");
 
@@ -101,7 +101,7 @@ namespace MarkovAlgorithmInterpreterTest
         [Test]
         public void ReplaceWithEmptyStringAtStart()
         {
-            var rule = new FindReplaceRule("abc", "");
+            var rule = FindReplaceRule.Create("abc", "");
 
             var application = rule.Apply("abcAB");
 
@@ -112,7 +112,7 @@ namespace MarkovAlgorithmInterpreterTest
         [Test]
         public void ReplaceWithEmptyStringAtEnd()
         {
-            var rule = new FindReplaceRule("abc", "");
+            var rule = FindReplaceRule.Create("abc", "");
 
             var application = rule.Apply("ABabc");
 
