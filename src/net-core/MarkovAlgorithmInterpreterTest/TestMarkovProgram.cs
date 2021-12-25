@@ -192,5 +192,44 @@ namespace MarkovAlgorithmInterpreterTest
 
             Assert.AreEqual(expectedOutput, run.Output);
         }
+
+        [TestCase("", "")]
+        [TestCase("a", "a")]
+        [TestCase("x", "")]
+        [TestCase("xx", "")]
+        [TestCase("xax", "a")]
+        [TestCase("xxxabc", "abc")]
+        [TestCase("abcxxx", "abc")]
+        [TestCase("xxxabcxabcxxx", "abcxabc")]
+        public void Trim(string input, string expectedOutput)
+        {
+            var rules = new List<FindReplaceRule>();
+            rules.Add(new FindReplaceRule(FindRule.Start("x"), ReplaceRule.Inline("")));
+            rules.Add(new FindReplaceRule(FindRule.End("x"), ReplaceRule.Inline("")));
+
+            var program = new MarkovProgram(rules);
+
+            var run = program.Run(input);
+
+            Assert.AreEqual(expectedOutput, run.Output);
+        }
+
+        [TestCase("","")]
+        [TestCase("a", "a")]
+        [TestCase("ax", "xa")]
+        [TestCase("xax", "xxa")]
+        [TestCase("axxx", "xxxa")]
+        [TestCase("xxaxxaxx", "xxxxaxxa")]
+        public void RotateXToStart(string input, string expectedOutput)
+        {
+            var rules = new List<FindReplaceRule>();
+            rules.Add(new FindReplaceRule(FindRule.End("x"), ReplaceRule.Start("x")));
+
+            var program = new MarkovProgram(rules);
+
+            var run = program.Run(input);
+
+            Assert.AreEqual(expectedOutput, run.Output);
+        }
     }
 }

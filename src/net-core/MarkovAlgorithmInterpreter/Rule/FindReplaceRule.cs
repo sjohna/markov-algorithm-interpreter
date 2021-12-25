@@ -8,11 +8,11 @@ namespace MarkovAlgorithmInterpreter
 {
     public class FindReplaceRule
     {
+        /**
+         * Creates a find-anywhere, replace-inline rule.
+         */
         public static FindReplaceRule Create(string find, string replace)
         {
-            /**
-             * Creates a find-anywhere, replace-inline rule.
-             */ 
             return new FindReplaceRule(
                 FindRule.Anywhere(find),
                 ReplaceRule.Inline(replace));
@@ -22,7 +22,7 @@ namespace MarkovAlgorithmInterpreter
 
         public ReplaceRule Replace { get; protected set; }
 
-        protected FindReplaceRule(FindRule Find, ReplaceRule Replace)
+        public FindReplaceRule(FindRule Find, ReplaceRule Replace)
         {
             this.Find = Find;
             this.Replace = Replace;
