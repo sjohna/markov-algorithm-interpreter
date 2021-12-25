@@ -8,9 +8,9 @@ namespace MarkovAlgorithmInterpreter
 {
     public class MarkovProgram
     {
-        public IReadOnlyList<Rule> Rules { get; private set; }
+        public IReadOnlyList<FindReplaceRule> Rules { get; private set; }
 
-        public MarkovProgram(IReadOnlyList<Rule> Rules)
+        public MarkovProgram(IReadOnlyList<FindReplaceRule> Rules)
         {
             this.Rules = Rules.ToList();
         }

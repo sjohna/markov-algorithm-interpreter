@@ -6,17 +6,9 @@ using System.Threading.Tasks;
 
 namespace MarkovAlgorithmInterpreter
 {
-    public class Rule
+    public class FindReplaceRule : Rule
     {
-        public string Find { get; protected set; }
-
-        public int FindLength => Find.Length;
-
-        public string Replace { get; protected set; }
-
-        public int ReplaceLength => Replace.Length;
-
-        public Rule(string Find, string Replace)
+        public FindReplaceRule(string Find, string Replace)
         {
             this.Find = Find;
             this.Replace = Replace;
@@ -24,9 +16,9 @@ namespace MarkovAlgorithmInterpreter
 
         public virtual RuleApplication Apply(string input)
         {
-            if (!input.Contains(Find)) return RuleApplication.NotApplicable();
-
             var findLocation = input.IndexOf(Find);
+
+            if (findLocation == -1) return RuleApplication.NotApplicable();
 
             var newString = input.Substring(0, findLocation) + Replace + input.Substring(findLocation + FindLength);
 
