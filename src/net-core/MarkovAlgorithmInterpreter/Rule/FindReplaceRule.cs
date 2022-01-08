@@ -71,5 +71,31 @@ namespace MarkovAlgorithmInterpreter
 
             return RuleApplication<StringBuilder>.Applicable(input);
         }
+
+        public virtual RuleApplication<WorkingString> Apply(WorkingString input)
+        {
+            var findLocation = Find.Find(input);
+
+            if (findLocation == -1) return RuleApplication<WorkingString>.NotApplicable();
+
+            if (Replace.ReplaceLocation == ReplaceRule.Location.Inline)
+            {
+                input.Replace(findLocation, Find.ToFind.Length, Replace.ReplaceString);
+            }
+            else if (Replace.ReplaceLocation == ReplaceRule.Location.Start)
+            {
+                input.RemoveChars(findLocation, Find.ToFind.Length);
+
+                input.Prepend(Replace.ReplaceString);
+            }
+            else
+            {
+                input.RemoveChars(findLocation, Find.ToFind.Length);
+
+                input.Append(Replace.ReplaceString);
+            }
+
+            return RuleApplication<WorkingString>.Applicable(input);
+        }
     }
 }

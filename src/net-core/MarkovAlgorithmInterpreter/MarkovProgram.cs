@@ -17,7 +17,7 @@ namespace MarkovAlgorithmInterpreter
 
         public ProgramRun Run(string input)
         {
-            string currentString = input;
+            var current = new WorkingString(input);
 
             while (true)
             {
@@ -25,12 +25,12 @@ namespace MarkovAlgorithmInterpreter
 
                 foreach (var rule in Rules)
                 {
-                    var application = rule.Apply(currentString);
+                    var application = rule.Apply(current);
 
                     if (application.Applied)
                     {
                         ruleFound = true;
-                        currentString = application.Application;
+                        current = application.Application;
                         break;
                     }
                 }
@@ -38,7 +38,7 @@ namespace MarkovAlgorithmInterpreter
                 if (!ruleFound) break;
             }
 
-            return new ProgramRun(currentString);
+            return new ProgramRun(current.ToString());
         }
     }
 }

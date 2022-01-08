@@ -10,6 +10,7 @@ namespace MarkovAlgorithmInterpreterTest
 {
     [TestFixture(InputType.String)]
     [TestFixture(InputType.StringBuilder)]
+    [TestFixture(InputType.WorkingString)]
     class TestFindReplaceRule
     {
         private InputType inputType;
@@ -22,7 +23,8 @@ namespace MarkovAlgorithmInterpreterTest
         public enum InputType
         {
             String,
-            StringBuilder
+            StringBuilder,
+            WorkingString
         }
 
         private void DoApplicableTest(FindReplaceRule rule, string input, string expectedOutput)
@@ -34,9 +36,16 @@ namespace MarkovAlgorithmInterpreterTest
                 Assert.IsTrue(application.Applied);
                 Assert.AreEqual(expectedOutput, application.Application);
             }
-            else
+            else if (inputType == InputType.StringBuilder)
             {
                 var application = rule.Apply(new StringBuilder(input));
+
+                Assert.IsTrue(application.Applied);
+                Assert.AreEqual(expectedOutput, application.Application.ToString());
+            }
+            else if (inputType == InputType.WorkingString)
+            {
+                var application = rule.Apply(new WorkingString(input));
 
                 Assert.IsTrue(application.Applied);
                 Assert.AreEqual(expectedOutput, application.Application.ToString());

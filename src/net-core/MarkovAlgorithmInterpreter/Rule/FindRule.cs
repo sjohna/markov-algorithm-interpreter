@@ -115,5 +115,25 @@ namespace MarkovAlgorithmInterpreter
 
             return -1;
         }
+
+        public int Find(WorkingString input)
+        {
+            if (FindLocation == Location.Anywhere)
+            {
+                return input.IndexOf(ToFind);
+            }
+
+            if (FindLocation == Location.Start && input.StartsWith(ToFind))
+            {
+                return 0;
+            }
+
+            if (FindLocation == Location.End && input.EndsWith(ToFind))
+            {
+                return input.Length - ToFind.Length;
+            }
+
+            return -1;
+        }
     }
 }
