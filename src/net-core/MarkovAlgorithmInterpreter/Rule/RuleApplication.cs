@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace MarkovAlgorithmInterpreter
 {
-    public struct RuleApplication
+    public struct RuleApplication<T>
     {
-        public static RuleApplication NotApplicable()
+        public static RuleApplication<T> NotApplicable()
         {
-            return new RuleApplication()
+            return new RuleApplication<T>()
             {
                 Applied = false
             };
         }
 
-        public static RuleApplication Applicable(string newString)
+        public static RuleApplication<T> Applicable(T newString)
         {
-            return new RuleApplication()
+            return new RuleApplication<T>()
             {
                 Applied = true,
                 Application = newString
@@ -26,7 +26,7 @@ namespace MarkovAlgorithmInterpreter
         }
 
         public bool Applied { get; private set; }
-        public string Application { get; private set; }
+        public T Application { get; private set; }
 
 
     }

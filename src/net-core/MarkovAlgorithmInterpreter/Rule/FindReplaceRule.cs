@@ -28,15 +28,48 @@ namespace MarkovAlgorithmInterpreter
             this.Replace = Replace;
         }
 
-        public virtual RuleApplication Apply(string input)
+        public virtual RuleApplication<String> Apply(string input)
         {
             var findLocation = Find.Find(input);
 
-            if (findLocation == -1) return RuleApplication.NotApplicable();
+            if (findLocation == -1) return RuleApplication<String>.NotApplicable();
 
             var newString = Replace.Replace(input.Substring(0, findLocation), input.Substring(findLocation + Find.FindLength));
 
-            return RuleApplication.Applicable(newString);
+            return RuleApplication<String>.Applicable(newString);
+        }
+
+        public virtual RuleApplication<StringBuilder> Apply(StringBuilder input)
+        {
+            var findLocation = Find.Find(input);
+
+            if (findLocation == -1) return RuleApplication<StringBuilder>.NotApplicable();
+
+            if (Replace.ReplaceLocation == ReplaceRule.Location.Inline)
+            {
+                if (Find.ToFind.Length > 0)
+                {
+                    input.Replace(Find.ToFind, Replace.ReplaceString, findLocation, Find.ToFind.Length);
+                }
+                else
+                {
+                    input.Insert(findLocation, Replace.ReplaceString);
+                }
+            }
+            else if(Replace.ReplaceLocation == ReplaceRule.Location.Start)
+            {
+                input.Remove(findLocation, Find.ToFind.Length);
+
+                input.Insert(0, Replace.ReplaceString);
+            }
+            else
+            {
+                input.Remove(findLocation, Find.ToFind.Length);
+
+                input.Append(Replace.ReplaceString);
+            }
+
+            return RuleApplication<StringBuilder>.Applicable(input);
         }
     }
 }

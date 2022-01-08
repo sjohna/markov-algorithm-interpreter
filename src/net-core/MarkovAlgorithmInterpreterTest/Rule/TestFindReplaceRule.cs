@@ -8,116 +8,147 @@ using MarkovAlgorithmInterpreter;
 
 namespace MarkovAlgorithmInterpreterTest
 {
-    [TestFixture]
-    class TestRule
+    [TestFixture(InputType.String)]
+    [TestFixture(InputType.StringBuilder)]
+    class TestFindReplaceRule
     {
-        [Test]
-        public void ReplaceOneLetter()
+        private InputType inputType;
+
+        public TestFindReplaceRule(InputType inputType)
         {
-            var rule = FindReplaceRule.Create("a", "b");
-
-            var application = rule.Apply("a");
-
-            Assert.IsTrue(application.Applied);
-            Assert.AreEqual("b", application.Application);
+            this.inputType = inputType;
         }
 
-        [Test]
-        public void ReplaceFirstLetter()
+        public enum InputType
         {
-            var rule = FindReplaceRule.Create("a", "b");
-
-            var application = rule.Apply("aaaaa");
-
-            Assert.IsTrue(application.Applied);
-            Assert.AreEqual("baaaa", application.Application);
+            String,
+            StringBuilder
         }
 
-        [Test]
-        public void ReplaceLetterInMiddle()
+        private void DoApplicableTest(FindReplaceRule rule, string input, string expectedOutput)
         {
-            var rule = FindReplaceRule.Create("a", "b");
+            if (inputType == InputType.String)
+            {
+                var application = rule.Apply(input);
 
-            var application = rule.Apply("cccaccc");
+                Assert.IsTrue(application.Applied);
+                Assert.AreEqual(expectedOutput, application.Application);
+            }
+            else
+            {
+                var application = rule.Apply(new StringBuilder(input));
 
-            Assert.IsTrue(application.Applied);
-            Assert.AreEqual("cccbccc", application.Application);
+                Assert.IsTrue(application.Applied);
+                Assert.AreEqual(expectedOutput, application.Application.ToString());
+            }
         }
 
-        [Test]
-        public void ReplaceLastLetter()
+        private void DoInapplicableTest(FindReplaceRule rule, string input)
         {
-            var rule = FindReplaceRule.Create("a", "b");
+            if (inputType == InputType.String)
+            {
+                var application = rule.Apply(input);
 
-            var application = rule.Apply("cccca");
+                Assert.IsFalse(application.Applied);
+            }
+            else
+            {
+                var application = rule.Apply(new StringBuilder(input));
 
-            Assert.IsTrue(application.Applied);
-            Assert.AreEqual("ccccb", application.Application);
+                Assert.IsFalse(application.Applied);
+            }
         }
 
-        [Test]
-        public void FindNotFound()
+        [TestCase("a", "b", "a", "b")]
+        [TestCase("a", "b", "aaaaa", "baaaa")]
+        [TestCase("a", "b", "cccaccc", "cccbccc")]
+        [TestCase("a", "b", "cccca", "ccccb")]
+        [TestCase("abc", "cba", "AabcB", "AcbaB")]
+        [TestCase("hello", "world", "hello", "world")]
+        [TestCase("abc", "", "AabcB", "AB")]
+        [TestCase("abc", "", "abcAB", "AB")]
+        [TestCase("abc", "", "ABabc", "AB")]
+        [TestCase("abc", "", "abcAabcBabc", "AabcBabc")]
+        [TestCase("", "abc", "AB", "abcAB")]
+        [TestCase("", "abc", "", "abc")]
+        public void ApplicableFindAnywhereReplaceInlineRule(string find, string replace, string input, string expectedOutput)
         {
-            var rule = FindReplaceRule.Create("a", "b");
+            var rule = FindReplaceRule.Create(find, replace);
 
-            var application = rule.Apply("cbcbcb");
-
-            Assert.IsFalse(application.Applied);
+            DoApplicableTest(rule, input, expectedOutput);
         }
 
-        [Test]
-        public void ReplaceMultipleCharacters()
+        [TestCase("a", "b", "a", "b")]
+        [TestCase("a", "b", "aaaaa", "baaaa")]
+        [TestCase("a", "b", "cccaccc", "bcccccc")]
+        [TestCase("a", "b", "cccca", "bcccc")]
+        [TestCase("abc", "cba", "AabcB", "cbaAB")]
+        [TestCase("hello", "world", "hello", "world")]
+        [TestCase("abc", "", "AabcB", "AB")]
+        [TestCase("abc", "", "abcAB", "AB")]
+        [TestCase("abc", "", "ABabc", "AB")]
+        [TestCase("abc", "", "abcAabcBabc", "AabcBabc")]
+        [TestCase("", "abc", "AB", "abcAB")]
+        [TestCase("", "abc", "", "abc")]
+        public void ApplicableFindAnywhereReplaceAtStartRule(string find, string replace, string input, string expectedOutput)
         {
-            var rule = FindReplaceRule.Create("abc", "bca");
+            var rule = new FindReplaceRule(new FindRule(find, FindRule.Location.Anywhere), new ReplaceRule(replace, ReplaceRule.Location.Start));
 
-            var application = rule.Apply("AabcB");
-
-            Assert.IsTrue(application.Applied);
-            Assert.AreEqual("AbcaB", application.Application);
+            DoApplicableTest(rule, input, expectedOutput);
         }
 
-        [Test]
-        public void ReplaceWholeMultiCharacterString()
+        [TestCase("a", "b", "a", "b")]
+        [TestCase("a", "b", "aaaaa", "aaaab")]
+        [TestCase("a", "b", "cccaccc", "ccccccb")]
+        [TestCase("a", "b", "cccca", "ccccb")]
+        [TestCase("abc", "cba", "AabcB", "ABcba")]
+        [TestCase("hello", "world", "hello", "world")]
+        [TestCase("abc", "", "AabcB", "AB")]
+        [TestCase("abc", "", "abcAB", "AB")]
+        [TestCase("abc", "", "ABabc", "AB")]
+        [TestCase("abc", "", "abcAabcBabc", "AabcBabc")]
+        [TestCase("", "abc", "AB", "ABabc")]
+        [TestCase("", "abc", "", "abc")]
+        public void ApplicableFindAnywhereReplaceAtEndRule(string find, string replace, string input, string expectedOutput)
         {
-            var rule = FindReplaceRule.Create("hello", "world");
+            var rule = new FindReplaceRule(new FindRule(find, FindRule.Location.Anywhere), new ReplaceRule(replace, ReplaceRule.Location.End));
 
-            var application = rule.Apply("hello");
-
-            Assert.IsTrue(application.Applied);
-            Assert.AreEqual("world", application.Application);
+            DoApplicableTest(rule, input, expectedOutput);
         }
 
-        [Test]
-        public void ReplaceWithEmptyStringInMiddle()
+        [TestCase("a", "b", "cbcbc")]
+        [TestCase("a", "b", "")]
+        [TestCase("a", "", "cbcbc")]
+        [TestCase("abc", "bca", "bca")]
+        public void InapplicableFindAnywhereRule(string find, string replace, string input)
         {
-            var rule = FindReplaceRule.Create("abc", "");
+            var rule = new FindReplaceRule(new FindRule(find, FindRule.Location.Anywhere), new ReplaceRule(replace, ReplaceRule.Location.Inline));
 
-            var application = rule.Apply("AabcB");
-
-            Assert.IsTrue(application.Applied);
-            Assert.AreEqual("AB", application.Application);
+            DoInapplicableTest(rule, input);
         }
 
-        [Test]
-        public void ReplaceWithEmptyStringAtStart()
+        [TestCase("a", "b", "cbcbc")]
+        [TestCase("a", "b", "")]
+        [TestCase("a", "", "cbcbc")]
+        [TestCase("abc", "bca", "bca")]
+        [TestCase("abc", "bca", "ABabc")]
+        public void InapplicableFindAtStartRule(string find, string replace, string input)
         {
-            var rule = FindReplaceRule.Create("abc", "");
+            var rule = new FindReplaceRule(new FindRule(find, FindRule.Location.Start), new ReplaceRule(replace, ReplaceRule.Location.Inline));
 
-            var application = rule.Apply("abcAB");
-
-            Assert.IsTrue(application.Applied);
-            Assert.AreEqual("AB", application.Application);
+            DoInapplicableTest(rule, input);
         }
 
-        [Test]
-        public void ReplaceWithEmptyStringAtEnd()
+        [TestCase("a", "b", "cbcbc")]
+        [TestCase("a", "b", "")]
+        [TestCase("a", "", "cbcbc")]
+        [TestCase("abc", "bca", "bca")]
+        [TestCase("abc", "bca", "abcAB")]
+        public void InapplicableFindAtEndRule(string find, string replace, string input)
         {
-            var rule = FindReplaceRule.Create("abc", "");
+            var rule = new FindReplaceRule(new FindRule(find, FindRule.Location.End), new ReplaceRule(replace, ReplaceRule.Location.Inline));
 
-            var application = rule.Apply("ABabc");
-
-            Assert.IsTrue(application.Applied);
-            Assert.AreEqual("AB", application.Application);
+            DoInapplicableTest(rule, input);
         }
     }
 }

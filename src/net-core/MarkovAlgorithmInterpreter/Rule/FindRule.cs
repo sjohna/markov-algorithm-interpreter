@@ -50,5 +50,70 @@ namespace MarkovAlgorithmInterpreter
 
             return -1;
         }
+
+        public int Find(StringBuilder input)
+        {
+            if (FindLocation == Location.Anywhere)
+            {
+                for (int index = 0; index <= (input.Length - ToFind.Length); ++index)
+                {
+                    bool found = true;
+                    for (int compIndex = 0; compIndex < ToFind.Length; ++compIndex)
+                    {
+                        if (ToFind[compIndex] != input[index + compIndex])
+                        {
+                            found = false;
+                            break;
+                        }
+                    }
+
+                    if (found) return index;
+                }
+
+                return -1;
+            }
+
+            if (input.Length < ToFind.Length) return -1;
+
+            if (FindLocation == Location.Start)
+            {
+                int index = 0;
+
+                bool found = true;
+                for (int compIndex = 0; compIndex < ToFind.Length; ++compIndex)
+                {
+                    if (ToFind[compIndex] != input[index + compIndex])
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+
+                if (found) return index;
+
+                return -1;
+            }
+
+            if (FindLocation == Location.End)
+            {
+                int index = input.Length - ToFind.Length;
+
+                bool found = true;
+                for (int compIndex = 0; compIndex < ToFind.Length; ++compIndex)
+                {
+                    if (ToFind[compIndex] != input[index + compIndex])
+                    {
+                        found = false;
+                        break;
+                    }
+                }
+
+                if (found) return index;
+
+                return -1;
+            }
+
+            return -1;
+        }
     }
 }
